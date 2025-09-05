@@ -136,8 +136,8 @@ resource "azurerm_linux_web_app" "main" {
   }
 
   app_settings = {
-    # Database connection
-    "DATABASE_URL" = "mssql+pyodbc://${azurerm_mssql_server.main.administrator_login}:${random_password.sql_admin.result}@${azurerm_mssql_server.main.fully_qualified_domain_name}:1433/${azurerm_mssql_database.main.name}?driver=ODBC+Driver+18+for+SQL+Server&encrypt=yes&trustServerCertificate=no"
+    # Database connection - direct ODBC format
+    "DATABASE_URL" = "Driver={ODBC Driver 18 for SQL Server};Server=tcp:${azurerm_mssql_server.main.fully_qualified_domain_name},1433;Database=${azurerm_mssql_database.main.name};Uid=${azurerm_mssql_server.main.administrator_login};Pwd=${random_password.sql_admin.result};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
 
     # Application Insights
     "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.main.instrumentation_key

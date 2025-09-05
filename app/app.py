@@ -21,35 +21,8 @@ def get_db_connection():
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            # Parse the DATABASE_URL
-            # Format: mssql+pyodbc://user:pass@server:port/db?driver=...
-            url_parts = DATABASE_URL.split('://', 1)[1]  # Remove mssql+pyodbc://
-            auth_and_server = url_parts.split('/', 1)
-            auth_part = auth_and_server[0]
-            db_and_params = auth_and_server[1]
-            
-            # Extract username and password
-            username = auth_part.split(':')[0]
-            password_and_server = auth_part.split(':', 1)[1]
-            password = password_and_server.split('@')[0]
-            server = password_and_server.split('@', 1)[1]
-            
-            # Extract database name
-            database = db_and_params.split('?')[0]
-            
-            # Build connection string
-            conn_str = (
-                f"DRIVER={{ODBC Driver 18 for SQL Server}};"
-                f"SERVER={server};"
-                f"DATABASE={database};"
-                f"UID={username};"
-                f"PWD={password};"
-                f"Encrypt=yes;"
-                f"TrustServerCertificate=no;"
-                f"Connection Timeout=30;"
-            )
-            
-            conn = pyodbc.connect(conn_str)
+            # DATABASE_URL is now a direct ODBC connection string
+            conn = pyodbc.connect(DATABASE_URL)
             logger.info(f"Database connection successful on attempt {attempt + 1}")
             return conn
             
