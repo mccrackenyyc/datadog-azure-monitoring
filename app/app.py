@@ -268,3 +268,12 @@ if __name__ == '__main__':
     # Run the app
     port = int(os.environ.get('PORT', 8000))
     app.run(host='0.0.0.0', port=port, debug=False)
+else:
+    # When loaded by gunicorn, initialize database
+    try:
+        logger.info("Initializing database (gunicorn startup)...")
+        init_database()
+        logger.info("Database initialization complete (gunicorn startup)")
+    except Exception as e:
+        logger.error(f"Failed to initialize database (gunicorn startup): {str(e)}")
+        # Continue anyway
